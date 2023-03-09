@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 2d8833d7074912747ac7ea58627025f3
+guid: 7c6bf165255ed884187ec4f97aa983e7
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable:
@@ -10,17 +10,8 @@ ModelImporter:
       74: 7742422787416621025
     second: Bone|Attack
   - first:
-      74: -3468023727458569664
-    second: Bone|Attack.001
-  - first:
-      74: -2613769298319625989
-    second: Bone|Attack.002
-  - first:
-      74: 2761760662982875928
-    second: Bone|Attack.003
-  - first:
-      74: 8041881447419339076
-    second: Bone|Attack.004
+      74: -4389430858797060761
+    second: Bone|Dodge
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -49,7 +40,65 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Bone|Attack
+      takeName: Bone|Attack
+      internalID: 0
+      firstFrame: 0
+      lastFrame: 15
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Bone|Dodge
+      takeName: Bone|Dodge
+      internalID: 0
+      firstFrame: 0
+      lastFrame: 15
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 0
   meshes:
     lODScreenPercentages: []
