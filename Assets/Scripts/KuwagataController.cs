@@ -22,7 +22,7 @@ public class KuwagataController : MonoBehaviour
     private float openswing_keep_timeR = 0.0f;
     private float openswing_keep_timeL = 0.0f;
     private bool attackable = true;
-    private int num = 0;
+    private int num;
 
     private float maxHP;
     private float attacked_value;
