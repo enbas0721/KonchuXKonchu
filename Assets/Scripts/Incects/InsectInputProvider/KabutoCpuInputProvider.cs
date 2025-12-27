@@ -25,7 +25,7 @@ public class KabutoCpuInputProvider : MonoBehaviour, IInsectInputProvider, IOppo
 
     private float scheduledDodgeTime = -1f;
 
-    private InsectControllerBase opponent; // ← 参照で持つ
+    private InsectControllerBase opponent;
 
     private void Start()
     {
@@ -47,7 +47,6 @@ public class KabutoCpuInputProvider : MonoBehaviour, IInsectInputProvider, IOppo
         int attackFlag = 0;
         int dodgeFlag = 0;
 
-        // 再武装（attack）
         if (!attackable && Time.time >= rearmAttackTime)
         {
             attackable = true;
@@ -55,7 +54,6 @@ public class KabutoCpuInputProvider : MonoBehaviour, IInsectInputProvider, IOppo
             ScheduleNextAttack();
         }
 
-        // 再武装（dodge）
         if (!dodgeable && Time.time >= rearmDodgeTime)
         {
             dodgeable = true;

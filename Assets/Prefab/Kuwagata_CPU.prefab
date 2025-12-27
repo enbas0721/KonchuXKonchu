@@ -555,9 +555,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 689062db0e672d543a68fe66374526dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gage: {fileID: 0}
-  damagePerAttack: 0.02
-  hpMaxNormalized: 1
+  damagePerAttack: 20
+  hpMax: 300
   opponent: {fileID: 0}
   attack_sound: {fileID: 8300000, guid: a54b6520fe94e5042a729428dc32b039, type: 3}
   dodge_sound: {fileID: 8300000, guid: fece0123f25ffbc4d8ecf284653e170b, type: 3}

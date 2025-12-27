@@ -9,8 +9,8 @@ public class KabutoJoyconInputProvider : MonoBehaviour, IInsectInputProvider
     private Joycon using_joycon;
 
     [SerializeField] private string player = "1P";
-    [SerializeField] private float accel_threshold_dodge = 2.5f;
-    [SerializeField] private float accel_threshold_attack = 3.0f;
+    [SerializeField] private float accel_threshold_dodge = 2.0f;
+    [SerializeField] private float accel_threshold_attack = 2.5f;
 
     private bool attackable = true;
     private bool dodgeable = true;
@@ -42,7 +42,6 @@ public class KabutoJoyconInputProvider : MonoBehaviour, IInsectInputProvider
     {
         if (m_joycons == null || m_joycons.Count <= 0 || using_joycon == null)
         {
-            Debug.Log("null!!!!!!!!!!!!!!!");
             return default;
         }
 

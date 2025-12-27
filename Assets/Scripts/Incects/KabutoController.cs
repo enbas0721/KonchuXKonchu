@@ -41,6 +41,8 @@ public class KabutoController : InsectControllerBase
         var opp = Opponent;
         var oppState = (opp != null) ? opp.AnimState : InsectAnimState.Idle;
 
+        if (inputProvider == null) return;
+
         var input = inputProvider.GetInput();
         attack_flag = input.AttackFlag;
         dodge_flag = input.DodgeFlag;
@@ -79,6 +81,8 @@ public class KabutoController : InsectControllerBase
 
             case 2:
                 SetAttackAnim(false);
+                break;
+            default:
                 break;
         }
 

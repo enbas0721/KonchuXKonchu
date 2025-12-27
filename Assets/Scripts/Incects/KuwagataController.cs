@@ -68,7 +68,7 @@ public class KuwagataController : InsectControllerBase
                         if (!special_attackable)
                         {
                             ApplyDamageDefault();
-                            base.audioSource.PlayOneShot(attack_sound);
+                            audioSource.PlayOneShot(attack_sound);
                         }
                         else
                         {
