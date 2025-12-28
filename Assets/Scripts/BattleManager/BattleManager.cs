@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class BattleManager : MonoBehaviour
 {
@@ -23,10 +24,13 @@ public class BattleManager : MonoBehaviour
     private bool battleStarted = false;
     private bool battleEnded = false;
 
-
     [Header("UI")]
     [SerializeField] private RectTransform p1Gage;
     [SerializeField] private RectTransform p2Gage;
+
+    [Header("Return To Title")]
+    [SerializeField] private string titleSceneName = "Title";
+    [SerializeField] private float returnDelaySec = 3.0f;
 
     private FighterConfig player1;
     private FighterConfig player2;
@@ -78,6 +82,8 @@ public class BattleManager : MonoBehaviour
             }
 
             Debug.Log($"Battle End: {winner}");
+
+            StartCoroutine(ReturnToTitleAfterDelay());
         }
     }
 
@@ -229,6 +235,12 @@ public class BattleManager : MonoBehaviour
         // “ü—ÍŠJŽn
         SetProvidersEnabled(true);
         battleStarted = true;
+    }
+
+    private IEnumerator ReturnToTitleAfterDelay()
+    {
+        yield return new WaitForSeconds(returnDelaySec);
+        SceneManager.LoadScene(titleSceneName);
     }
 
     private void SetProvidersEnabled(bool enabled)

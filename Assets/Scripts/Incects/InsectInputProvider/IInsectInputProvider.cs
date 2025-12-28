@@ -14,4 +14,3 @@ public interface IOpponentAware
 {
     void SetOpponent(InsectControllerBase opponent);
 }
-
