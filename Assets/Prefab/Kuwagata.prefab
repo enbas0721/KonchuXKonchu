@@ -557,6 +557,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damagePerAttack: 20
+  damagePerSpecialAttack: 50
   hpMax: 300
   attack_sound: {fileID: 8300000, guid: a54b6520fe94e5042a729428dc32b039, type: 3}
   dodge_sound: {fileID: 8300000, guid: fece0123f25ffbc4d8ecf284653e170b, type: 3}
@@ -575,13 +576,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: befaec17b30e3f841ba981f20847c533, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  accel_threshold: 2
-  swing_time_threshold: 0.02
-  closeGraceTime: 0.06
-  openGraceTime: 0.06
+  accel_threshold: 0.8
+  swing_time_threshold: 0
+  close_grace_time: 0.1
   accel_threshold_dodge: 2
-  dodge_time_threshold: 0.02
-  pullGraceTime: 0.06
+  dodge_time_threshold: 0
+  pull_grace_time: 0.1
 --- !u!114 &7426101657264392580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -594,16 +594,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 079274962ef535c4f9ff94ad129e8303, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackIntervalMin: 0.9
-  attackIntervalMax: 1.8
-  attackChance: 0.8
-  rearmDelayAttack: 0.15
-  enableDodge: 1
-  dodgeReactionMin: 0.08
-  dodgeReactionMax: 0.18
-  dodgeChance: 0.85
-  rearmDelayDodge: 0.1
-  preferDodgeOverAttack: 1
+  attack_interval_min: 0.9
+  attack_interval_max: 1.8
+  attack_chance: 0.8
+  attack_cool_down: 0.15
+  enable_dodge: 1
+  dodge_reaction_min: 0.08
+  dodge_reaction_max: 0.18
+  dodge_chance: 0.85
+  dodge_cool_down: 0.1
+  prefer_dodge_over_attack: 1
 --- !u!1 &4045675444819761553
 GameObject:
   m_ObjectHideFlags: 0

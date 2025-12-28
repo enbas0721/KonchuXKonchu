@@ -12,6 +12,7 @@ public abstract class InsectControllerBase : MonoBehaviour
 
     [Header("HP")]
     [SerializeField] protected float damagePerAttack = 20f;
+    [SerializeField] protected float damagePerSpecialAttack = 50f;
     [SerializeField] protected float hpMax = 300f;
 
     private InsectControllerBase opponent;
@@ -39,12 +40,6 @@ public abstract class InsectControllerBase : MonoBehaviour
     protected virtual void Start()
     {
         attackedValue = hpMax;
-    }
-    protected T FindInterface<T>() where T : class
-    {
-        foreach (var mb in GetComponents<MonoBehaviour>())
-            if (mb is T t) return t;
-        return null;
     }
 
     protected void UpdateGage(float val)
@@ -98,9 +93,14 @@ public abstract class InsectControllerBase : MonoBehaviour
         UpdateGage(gageMaxWidth);
     }
 
-    public void SetAttackAnim(bool on)
+    public void SetAttackAnim()
     {
-        anim.SetBool("attackOn", on);
+        anim.SetTrigger("attackOn");
+    }
+
+    public void SetDodgeAnim()
+    {
+        anim.SetTrigger("dodgeOn");
     }
     public void SetOpponent(InsectControllerBase opp)
     {

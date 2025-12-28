@@ -1,7 +1,7 @@
 public struct InsectInput
 {
-    public int AttackFlag; // 0/1/2 ‚ğ‚»‚Ì‚Ü‚Üg‚¤i‹““®‚ğ•Ï‚¦‚È‚¢‚½‚ßj
-    public int DodgeFlag;  // 0/1/2
+    public bool Attack;
+    public bool Dodge;
 }
 
 public interface IInsectInputProvider
