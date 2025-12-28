@@ -19,6 +19,7 @@ public class MenuController : MonoBehaviour
         BattleConfig.SetDefaults();
 
         SetupDropdown(p1Insect, new List<string> { "Kabuto", "Kuwagata" });
+        SetupDropdown(p2Insect, new List<string> { "Kabuto", "Kuwagata" });
         p1Insect.value = (int)BattleConfig.Player1.insectType;
         p2Insect.value = (int)BattleConfig.Player2.insectType;
 

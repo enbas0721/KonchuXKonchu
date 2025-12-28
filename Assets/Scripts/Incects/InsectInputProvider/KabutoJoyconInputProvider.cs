@@ -8,9 +8,11 @@ public class KabutoJoyconInputProvider : MonoBehaviour, IInsectInputProvider
     private Joycon m_joyconR;
     private Joycon using_joycon;
 
-    [SerializeField] private string player = "1P";
     [SerializeField] private float accel_threshold_dodge = 2.0f;
     [SerializeField] private float accel_threshold_attack = 2.5f;
+
+    private bool isEnabled = true;
+    public void SetEnabled(bool enabled) => isEnabled = enabled;
 
     private bool attackable = true;
     private bool dodgeable = true;
@@ -25,10 +27,13 @@ public class KabutoJoyconInputProvider : MonoBehaviour, IInsectInputProvider
             Debug.Log("m_joycons == null!!");
         };
 
-        m_joyconL = m_joycons.Find(c => c.isLeft);
-        m_joyconR = m_joycons.Find(c => !c.isLeft);
+        /*m_joyconL = m_joycons.Find(c => c.isLeft);
+        m_joyconR = m_joycons.Find(c => !c.isLeft);*/
 
-        using_joycon = (player == "1P") ? m_joyconL : m_joyconR;
+        if (m_joyconL == null && m_joycons.Count > 0) m_joyconL = m_joycons[0];
+        if (m_joyconR == null && m_joycons.Count > 1) m_joyconR = m_joycons[1];
+
+        using_joycon = m_joyconL;
     }
 
     private int CheckSwing(float swing_accel, float accel_th, bool flag)
@@ -40,6 +45,8 @@ public class KabutoJoyconInputProvider : MonoBehaviour, IInsectInputProvider
 
     public InsectInput GetInput()
     {
+        if (!isEnabled) return default;
+
         if (m_joycons == null || m_joycons.Count <= 0 || using_joycon == null)
         {
             return default;

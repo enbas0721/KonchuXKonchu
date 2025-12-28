@@ -75,9 +75,11 @@ GameObject:
   - component: {fileID: 2236100549332625479}
   - component: {fileID: 1766115734913257392}
   - component: {fileID: 1766115734913257393}
-  - component: {fileID: 1766115734913257390}
+  - component: {fileID: 6072950445850955461}
+  - component: {fileID: 4766901485663500465}
+  - component: {fileID: -2206424720768777189}
   m_Layer: 0
-  m_Name: Kabuto_1P
+  m_Name: Kabuto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -217,7 +219,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1766115734913257390
+--- !u!114 &6072950445850955461
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -226,17 +228,53 @@ MonoBehaviour:
   m_GameObject: {fileID: 1460267125417882365}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46be3f00b087e6a40829f5be1f0e0631, type: 3}
+  m_Script: {fileID: 11500000, guid: fe500ef91ce57dd4497b78fd94751125, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   damagePerAttack: 20
   hpMax: 300
-  opponent: {fileID: 0}
   attack_sound: {fileID: 8300000, guid: a54b6520fe94e5042a729428dc32b039, type: 3}
   dodge_sound: {fileID: 8300000, guid: fece0123f25ffbc4d8ecf284653e170b, type: 3}
   special_effect: {fileID: 1766714858276894528}
-  special_attack_sound: {fileID: 8300000, guid: 4e80a0888ba239e4c877a4da021903b0,
+  special_attack_sound: {fileID: 8300000, guid: 8d9a03b6294dfbf4d84fb2e79968182e,
     type: 3}
+--- !u!114 &4766901485663500465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1460267125417882365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e8f5d05c449fda4db709c7ee11aa389, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: 1P
+  accel_threshold_dodge: 2
+  accel_threshold_attack: 2.5
+--- !u!114 &-2206424720768777189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1460267125417882365}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 079274962ef535c4f9ff94ad129e8303, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackIntervalMin: 0.9
+  attackIntervalMax: 1.8
+  attackChance: 0.8
+  rearmDelayAttack: 0.15
+  enableDodge: 1
+  dodgeReactionMin: 0.08
+  dodgeReactionMax: 0.18
+  dodgeChance: 0.85
+  rearmDelayDodge: 0.1
+  preferDodgeOverAttack: 1
 --- !u!1 &1558602128988673746
 GameObject:
   m_ObjectHideFlags: 0

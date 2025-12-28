@@ -1,58 +1,63 @@
-using System;
 using UnityEngine;
 
-public class KabutoController : InsectControllerBase
+public class InsectController : InsectControllerBase
 {
     private IInsectInputProvider inputProvider;
 
     private int attack_flag = 0;
     private int dodge_flag = 0;
 
-    private bool special_attackable = false;
-
+    [Header("SFX")]
     [SerializeField] private AudioClip attack_sound;
     [SerializeField] private AudioClip dodge_sound;
+
+    [Header("Special (optional)")]
     [SerializeField] private GameObject special_effect;
     [SerializeField] private AudioClip special_attack_sound;
+
+    private bool special_attackable = false;
 
     protected override void Start()
     {
         base.Start();
 
-        inputProvider = GetComponent<IInsectInputProvider>();
+        // BattleManager注入が基本。保険として拾うなら FindInterface を使う
         if (inputProvider == null)
         {
-            Debug.LogError("IInsectInputProvider not found. Attach KabutoJoyconInputProvider.");
+            inputProvider = FindInterface<IInsectInputProvider>();
+            // 注入される前提なら Warning 程度でOK
+            if (inputProvider == null)
+                Debug.LogWarning($"{name}: InputProvider is not set yet. BattleManager should inject it.");
         }
 
         if (Opponent == null)
-        {
             Debug.LogWarning($"{name}: Opponent is not set. BattleManager should call SetOpponent().");
-        }
-
 
         if (special_effect != null) special_effect.SetActive(false);
     }
 
-    void Update()
+    private void Update()
     {
         UpdateAnimStateFromAnimator();
 
+        if (inputProvider == null) return;
+
         var opp = Opponent;
         var oppState = (opp != null) ? opp.AnimState : InsectAnimState.Idle;
-
-        if (inputProvider == null) return;
 
         var input = inputProvider.GetInput();
         attack_flag = input.AttackFlag;
         dodge_flag = input.DodgeFlag;
 
-        if (Opponent != null && Opponent.AnimState == InsectAnimState.Attack && AnimState == InsectAnimState.Dodge)
+        if (Opponent != null &&
+            Opponent.AnimState == InsectAnimState.Attack &&
+            AnimState == InsectAnimState.Dodge)
         {
             special_attackable = true;
             if (special_effect != null) special_effect.SetActive(true);
         }
 
+        // Attack
         switch (attack_flag)
         {
             case 1:
@@ -60,21 +65,23 @@ public class KabutoController : InsectControllerBase
                 {
                     SetAttackAnim(true);
 
-                    if ((oppState == InsectAnimState.Attack) || (oppState == InsectAnimState.Idle))
+                    if (oppState == InsectAnimState.Attack || oppState == InsectAnimState.Idle)
                     {
-                        if (!special_attackable)
+                        Opponent?.TakeDamageDefault();
+
+                        if (special_attackable)
                         {
-                            ApplyDamageDefault();
-                            audioSource.PlayOneShot(attack_sound);
-                        }
-                        else
-                        {
-                            ApplyDamageDefault();
-                            audioSource.PlayOneShot(special_attack_sound);
+                            if (special_attack_sound != null) audioSource.PlayOneShot(special_attack_sound);
                             special_attackable = false;
                             if (special_effect != null) special_effect.SetActive(false);
                         }
+                        else
+                        {
+                            if (attack_sound != null) audioSource.PlayOneShot(attack_sound);
+                        }
                     }
+
+                    // 攻撃したフレームに回避を打ち消す（元の挙動維持）
                     dodge_flag = 0;
                 }
                 break;
@@ -82,17 +89,16 @@ public class KabutoController : InsectControllerBase
             case 2:
                 SetAttackAnim(false);
                 break;
-            default:
-                break;
         }
 
+        // Dodge
         switch (dodge_flag)
         {
             case 1:
                 if (AnimState == InsectAnimState.Idle)
                 {
                     anim.SetBool("dodgeOn", true);
-                    audioSource.PlayOneShot(dodge_sound);
+                    if (dodge_sound != null) audioSource.PlayOneShot(dodge_sound);
                 }
                 break;
 
@@ -101,9 +107,9 @@ public class KabutoController : InsectControllerBase
                 break;
         }
     }
+
     public void SetInputProvider(IInsectInputProvider provider)
     {
         inputProvider = provider;
     }
-
 }

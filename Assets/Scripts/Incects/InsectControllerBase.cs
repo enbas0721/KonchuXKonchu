@@ -11,15 +11,16 @@ public abstract class InsectControllerBase : MonoBehaviour
 {
 
     [Header("HP")]
-    [SerializeField] protected float damagePerAttack = 0.02f;
+    [SerializeField] protected float damagePerAttack = 20f;
     [SerializeField] protected float hpMax = 300f;
 
-    [Header("Battle")]
-    [SerializeField] private InsectControllerBase opponent;
+    private InsectControllerBase opponent;
 
     public InsectControllerBase Opponent => opponent;
-
     public InsectAnimState AnimState { get; private set; } = InsectAnimState.Idle;
+    public float Hp01 => attackedValue;
+    public bool IsDead { get; private set; } = false;
+
 
     protected RectTransform gage;
     protected float gageMaxWidth;
@@ -37,7 +38,7 @@ public abstract class InsectControllerBase : MonoBehaviour
 
     protected virtual void Start()
     {
-
+        attackedValue = hpMax;
     }
     protected T FindInterface<T>() where T : class
     {
@@ -49,9 +50,17 @@ public abstract class InsectControllerBase : MonoBehaviour
     protected void UpdateGage(float val)
     {
         if (gage == null) return;
-        Debug.Log("val: " + val);
         gage.sizeDelta = new Vector2(val, gage.sizeDelta.y);
-        Debug.Log("gage.sizeDelata: " + gage.sizeDelta);
+    }
+
+    public void TakeDamageDefault()
+    {
+        ApplyDamageDefault();
+    }
+
+    public void TakeDamage(float damageValue)
+    {
+        ApplyDamage(damageValue);
     }
 
     protected void ApplyDamageDefault()
@@ -61,9 +70,16 @@ public abstract class InsectControllerBase : MonoBehaviour
 
     protected void ApplyDamage(float damageValue)
     {
+        if (IsDead) return;
+
         attackedValue -= damageValue;
-        /* [TODO] 現在はHPが0になったらループ。本来はゲーム終了。 */
-        if (attackedValue <= 0f) attackedValue = hpMax;
+
+        if (attackedValue <= 0f)
+        {
+            attackedValue = 0f;
+            IsDead = true;
+        }
+
         UpdateGage(attackedValue);
     }
     protected virtual void UpdateAnimStateFromAnimator()
