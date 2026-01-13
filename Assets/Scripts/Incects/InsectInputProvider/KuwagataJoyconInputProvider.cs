@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,109 +7,90 @@ public class KuwagataJoyconInputProvider : MonoBehaviour, IInsectInputProvider
     private Joycon m_joyconL;
     private Joycon m_joyconR;
 
-    private float closeswing_keep_timeR = 0.0f;
-    private float closeswing_keep_timeL = 0.0f;
-    private float openswing_keep_timeR = 0.0f;
-    private float openswing_keep_timeL = 0.0f;
+    private bool isEnabled = true;
+    public void SetEnabled(bool enabled) => isEnabled = enabled;
 
-    private bool attackable = true;
+    [Header("Attack")]
+    [SerializeField] private float accel_threshold = 0.8f;
 
-    [SerializeField] private float accel_threshold = 0.03f;
-    [SerializeField] private float swing_time_threshold = 0.02f;
-    [SerializeField] private float closeGraceTime = 0.06f;
-    [SerializeField] private float openGraceTime = 0.06f;
+    private bool attack_issued = false;
 
-    private float closeGraceTimer = 0f;
-    private float openGraceTimer = 0f;
-
+    [Header("Dodge")]
+    [SerializeField] private float accel_threshold_dodge = 2.0f;
+    
+    private bool dodge_issued = false;
 
     private void Start()
     {
         m_joycons = JoyconManager.Instance.j;
-        if (m_joycons == null || m_joycons.Count <= 0) return;
+        if (m_joycons == null || m_joycons.Count <= 0)
+        {
+            Debug.Log("m_joycons is empty");
+        };
 
-        // 左右はFindが安全
         m_joyconL = m_joycons.Find(c => c.isLeft);
         m_joyconR = m_joycons.Find(c => !c.isLeft);
 
-        // フォールバック
         if (m_joyconL == null && m_joycons.Count > 0) m_joyconL = m_joycons[0];
         if (m_joyconR == null && m_joycons.Count > 1) m_joyconR = m_joycons[1];
     }
 
+    private static Vector3 MapAccel(Joycon j)
+    {
+        var a = j.GetAccel();
+        return new Vector3((-1f) * a.y, a.z, (-1f) * a.x);
+    }
+
     public InsectInput GetInput()
     {
-        if (m_joycons == null || m_joycons.Count <= 0 || m_joyconL == null || m_joyconR == null)
-            return default;
+        if (!isEnabled) return default;
+        if (m_joyconL == null || m_joyconR == null) return default;
 
-        float swing_accelR = m_joyconR.GetAccel().y;
-        float swing_accelL = m_joyconL.GetAccel().y;
+        var accel_R = MapAccel(m_joyconR);
+        var accel_L = MapAccel(m_joyconL);
 
-        bool closing = ((-1f * swing_accelR) >= accel_threshold) && (swing_accelL >= accel_threshold);
-        bool opening = (swing_accelR >= accel_threshold) && ((-1f * swing_accelL) >= accel_threshold);
+        float swing_accelR = accel_R.x;
+        float swing_accelL = accel_L.x;
 
-        int attack_flag = 0;
+        bool closing = (((-1) * swing_accelR) >= accel_threshold) && 
+                        (swing_accelL >= accel_threshold);
 
-        // close 溜め -> 発動(1) -> 使用不可
-        if (closing && attackable)
+        bool attack_event = false;
+
+        /* Attack */
+        if (closing)
         {
-            closeGraceTimer = closeGraceTime;
-            closeswing_keep_timeR += Time.deltaTime;
-            closeswing_keep_timeL += Time.deltaTime;
 
-            if (closeswing_keep_timeR > swing_time_threshold &&
-                closeswing_keep_timeL > swing_time_threshold)
+            if (!attack_issued)
             {
-                attack_flag = 1;
-                closeswing_keep_timeR = closeswing_keep_timeL = 0f;
-                attackable = false;
+                attack_event = true;
+                attack_issued = true;
             }
         }
         else
         {
-            // 途切れても少しだけ猶予
-            if (closeGraceTimer > 0f)
-            {
-                closeGraceTimer -= Time.deltaTime;
-            }
-            else
-            {
-                closeswing_keep_timeR = closeswing_keep_timeL = 0f;
-            }
+            attack_issued = false;
         }
 
-        // open 溜め -> 再武装(2)
-        // open 溜め -> 再武装
-        if (opening && !attackable)
+        /* Dodge */
+        bool pulling = (((-1) * accel_R.z) >= accel_threshold_dodge) ||
+                       (((-1) * accel_L.z) >= accel_threshold_dodge);
+
+        bool dodge_event = false;
+
+        if (pulling)
         {
-            openGraceTimer = openGraceTime;
-
-            openswing_keep_timeR += Time.deltaTime;
-            openswing_keep_timeL += Time.deltaTime;
-
-            if (openswing_keep_timeR > 0.005f &&
-                openswing_keep_timeL > 0.005f)
+            if (!dodge_issued)
             {
-                attack_flag = 2; // 再武装
-                openswing_keep_timeR = 0f;
-                openswing_keep_timeL = 0f;
-                attackable = true;
+                dodge_event = true;
+                dodge_issued = true;
             }
         }
         else
         {
-            if (openGraceTimer > 0f)
-            {
-                openGraceTimer -= Time.deltaTime;
-            }
-            else
-            {
-                openswing_keep_timeR = 0f;
-                openswing_keep_timeL = 0f;
-            }
+            dodge_issued = false;
         }
 
-
-        return new InsectInput { AttackFlag = attack_flag, DodgeFlag = 0 };
+        return new InsectInput { Attack = attack_event, Dodge = dodge_event };
     }
 }

@@ -8,9 +8,15 @@ public class KabutoJoyconInputProvider : MonoBehaviour, IInsectInputProvider
     private Joycon m_joyconR;
     private Joycon using_joycon;
 
-    [SerializeField] private string player = "1P";
-    [SerializeField] private float accel_threshold_dodge = 2.5f;
-    [SerializeField] private float accel_threshold_attack = 3.0f;
+    [Header("Thresholds")]
+    [SerializeField] private float accel_threshold_dodge = 2.0f;
+    [SerializeField] private float accel_threshold_attack = 2.5f;
+
+    [Header("Rearm (gesture release)")]
+    [SerializeField] private float rearm_threshold = 0.3f;
+
+    private bool is_enabled = true;
+    public void SetEnabled(bool enabled) => is_enabled = enabled;
 
     private bool attackable = true;
     private bool dodgeable = true;
@@ -28,40 +34,65 @@ public class KabutoJoyconInputProvider : MonoBehaviour, IInsectInputProvider
         m_joyconL = m_joycons.Find(c => c.isLeft);
         m_joyconR = m_joycons.Find(c => !c.isLeft);
 
-        using_joycon = (player == "1P") ? m_joyconL : m_joyconR;
+        if (m_joyconL == null && m_joycons.Count > 0) m_joyconL = m_joycons[0];
+        if (m_joyconR == null && m_joycons.Count > 1) m_joyconR = m_joycons[1];
+
+        using_joycon = m_joyconL;
     }
 
-    private int CheckSwing(float swing_accel, float accel_th, bool flag)
+    private static Vector3 MapAccel(Joycon j)
     {
-        if ((swing_accel >= accel_th) && flag) return 1;
-        if (((-1f * swing_accel) >= 0.3f) && (!flag)) return 2;
-        return 0;
+        var a = j.GetAccel();
+        return new Vector3((-1f) * a.y, a.z, (-1f) * a.x);
     }
 
     public InsectInput GetInput()
     {
-        if (m_joycons == null || m_joycons.Count <= 0 || using_joycon == null)
+        if (!is_enabled) return default;
+
+        if (using_joycon == null) return default;
+
+        accel = MapAccel(using_joycon);
+
+        float swing_accel_attack = accel.y;
+        float swing_accel_dodge = (-1f) * accel.z;
+
+        bool attack_event = false;
+        bool dodge_event = false;
+
+        if (attackable)
         {
-            Debug.Log("null!!!!!!!!!!!!!!!");
-            return default;
+            if (swing_accel_attack >= accel_threshold_attack)
+            {
+                attackable = false;
+                attack_event = true;
+            }
+        }
+        else
+        {
+            // ‹t‘¤‚Ì“®‚«‚ÅÄ•‘•
+            if ((-1f * swing_accel_attack) >= rearm_threshold)
+            {
+                attackable = true;
+            }
         }
 
-        accel.x = (-1f) * using_joycon.GetAccel().y;
-        accel.y = using_joycon.GetAccel().z;
-        accel.z = (-1f) * using_joycon.GetAccel().x;
+        if (dodgeable)
+        {
+            if (swing_accel_dodge >= accel_threshold_dodge)
+            {
+                dodge_event = true;
+                dodgeable = false;
+            }
+        }
+        else
+        {
+            if ((-1f * swing_accel_dodge) >= rearm_threshold)
+            {
+                dodgeable = true;
+            }
+        }
 
-        float swing_accel_y = accel.y;
-        int attack_flag = CheckSwing(swing_accel_y, accel_threshold_attack, attackable);
-
-        float swing_accel_z = (-1f) * accel.z;
-        int dodge_flag = CheckSwing(swing_accel_z, accel_threshold_dodge, dodgeable);
-
-        if (attack_flag == 1) attackable = false;
-        else if (attack_flag == 2) attackable = true;
-
-        if (dodge_flag == 1) dodgeable = false;
-        else if (dodge_flag == 2) dodgeable = true;
-
-        return new InsectInput { AttackFlag = attack_flag, DodgeFlag = dodge_flag };
+        return new InsectInput { Attack = attack_event, Dodge = dodge_event };
     }
 }

@@ -9,22 +9,24 @@ public enum InsectAnimState
 [RequireComponent(typeof(AudioSource))]
 public abstract class InsectControllerBase : MonoBehaviour
 {
-    [Header("Common")]
-    [SerializeField] protected RectTransform gage;
 
     [Header("HP")]
-    [SerializeField] protected float damagePerAttack = 0.02f;
-    [SerializeField] protected float hpMaxNormalized = 1f;
+    [SerializeField] protected float damagePerAttack = 20f;
+    [SerializeField] protected float damagePerSpecialAttack = 50f;
+    [SerializeField] protected float hpMax = 300f;
 
-    [Header("Battle")]
-    [SerializeField] private InsectControllerBase opponent;
+    private InsectControllerBase opponent;
 
     public InsectControllerBase Opponent => opponent;
-
     public InsectAnimState AnimState { get; private set; } = InsectAnimState.Idle;
+    public float Hp01 => attackedValue;
+    public bool IsDead { get; private set; } = false;
 
+
+    protected RectTransform gage;
     protected float gageMaxWidth;
-    protected float attackedValue01;
+
+    protected float attackedValue;
 
     protected AudioSource audioSource;
     protected Animator anim;
@@ -37,22 +39,23 @@ public abstract class InsectControllerBase : MonoBehaviour
 
     protected virtual void Start()
     {
-        if (gage != null) gageMaxWidth = gage.sizeDelta.x;
-        attackedValue01 = hpMaxNormalized;
-        UpdateGage(attackedValue01);
-    }
-    protected T FindInterface<T>() where T : class
-    {
-        foreach (var mb in GetComponents<MonoBehaviour>())
-            if (mb is T t) return t;
-        return null;
+        attackedValue = hpMax;
     }
 
-    protected void UpdateGage(float t01)
+    protected void UpdateGage(float val)
     {
         if (gage == null) return;
-        float x = Mathf.Lerp(0f, gageMaxWidth, Mathf.Clamp01(t01));
-        gage.sizeDelta = new Vector2(x, gage.sizeDelta.y);
+        gage.sizeDelta = new Vector2(val, gage.sizeDelta.y);
+    }
+
+    public void TakeDamageDefault()
+    {
+        ApplyDamageDefault();
+    }
+
+    public void TakeDamage(float damageValue)
+    {
+        ApplyDamage(damageValue);
     }
 
     protected void ApplyDamageDefault()
@@ -60,11 +63,19 @@ public abstract class InsectControllerBase : MonoBehaviour
         ApplyDamage(damagePerAttack);
     }
 
-    protected void ApplyDamage(float damage01)
+    protected void ApplyDamage(float damageValue)
     {
-        attackedValue01 -= damage01;
-        if (attackedValue01 <= 0f) attackedValue01 = hpMaxNormalized;
-        UpdateGage(attackedValue01);
+        if (IsDead) return;
+
+        attackedValue -= damageValue;
+
+        if (attackedValue <= 0f)
+        {
+            attackedValue = 0f;
+            IsDead = true;
+        }
+
+        UpdateGage(attackedValue);
     }
     protected virtual void UpdateAnimStateFromAnimator()
     {
@@ -74,9 +85,22 @@ public abstract class InsectControllerBase : MonoBehaviour
         else if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack")) AnimState = InsectAnimState.Attack;
         else AnimState = InsectAnimState.Dodge;
     }
-    public void SetAttackAnim(bool on)
+
+    public void SetGage(RectTransform g)
     {
-        anim.SetBool("attackOn", on);
+        gage = g;
+        if (gage != null) gageMaxWidth = gage.sizeDelta.x;
+        UpdateGage(gageMaxWidth);
+    }
+
+    public void SetAttackAnim()
+    {
+        anim.SetTrigger("attackOn");
+    }
+
+    public void SetDodgeAnim()
+    {
+        anim.SetTrigger("dodgeOn");
     }
     public void SetOpponent(InsectControllerBase opp)
     {
