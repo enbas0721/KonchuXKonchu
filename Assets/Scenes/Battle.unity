@@ -262,6 +262,8 @@ MonoBehaviour:
   resultText: {fileID: 2080355427}
   p1Gage: {fileID: 1333491968}
   p2Gage: {fileID: 1899357615}
+  titleSceneName: Title
+  returnDelaySec: 3
 --- !u!4 &335897596
 Transform:
   m_ObjectHideFlags: 0
@@ -1803,8 +1805,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: 3
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0e41b15463a259740b4742d62b5f80f7, type: 2}
+  m_sharedMaterial: {fileID: 6897943127560031755, guid: 0e41b15463a259740b4742d62b5f80f7,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1889,6 +1892,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 2274461469466682653, guid: ba9105e8b9f28dc4ea47d64bcb53c994,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2274461469466682654, guid: ba9105e8b9f28dc4ea47d64bcb53c994,
         type: 3}

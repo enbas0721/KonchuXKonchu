@@ -5,7 +5,6 @@ public static class BattleConfig
 
     public static void SetDefaults()
     {
-        // 1P: デフォルト
         Player1.insectType = InsectType.Kabuto;
         Player1.controlType = ControlType.HumanJoycon;
 
